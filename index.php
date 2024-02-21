@@ -10,6 +10,10 @@
     <title>Document</title>
 </head>
 
+<!-- Styling using DaisyUI and TailwindCSS -->
+<!-- DaisyUI - https://daisyui.com/ -->
+<!-- TailwindCSS - https://tailwindcss.com/ -->
+
 <body class="p-4 sm:p-10 sm:py-8">
     <header class="mb-5">
         <div class="navbar bg-base-100 border-2 border-base-300 rounded-xl shadow">
