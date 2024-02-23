@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie database</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css" type="text/css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
     <title>Document</title>
 </head>
 
@@ -23,8 +23,62 @@
     </header>
     <form action="index.php" method="post" class="my-4">
         <div class="space-x-2">
-            <button type="submit" name="query" value="view_all_movies" class="btn">View all movies</button>
-            <button type="submit" name="query" value="view_all_actors" class="btn">View all actors</button>
+            <button type="submit" name="query" value="view_all_movies">
+                <div class="btn">View all movies</div>
+            </button>
+            <button type="submit" name="query" value="view_all_actors">
+                <div class="btn">View all actors</div>
+            </button>
+        </div>
+    </form>
+    <form action="like_movie.php" method="post" class="my-4 rounded-badge border-2 border-base-300 p-6 shadow">
+        <div class="space-x-2 flex gap-4 items-center flex-wrap">
+            <h2 class="text-xl font-bold">Like a movie!</h2>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Who are you?</span>
+                </div>
+                <select class="select select-bordered">
+                    <option disabled selected>Select user</option>
+                    <?php
+                    $servername = "localhost";
+                    $username = "root";
+                    $password = "";
+                    $dbname = "COSI127b";
+
+                    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+                    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                    foreach ($conn->query("SELECT email FROM user") as $row) {
+                        echo "<option>" . $row['email'] . "</option>";
+                    }
+                    ?>
+                </select>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">What movie do you like?</span>
+                </div>
+                <select class="select select-bordered">
+                    <option disabled selected>Select movie</option>
+                    <?php
+                    $servername = "localhost";
+                    $username = "root";
+                    $password = "";
+                    $dbname = "COSI127b";
+
+                    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+                    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                    foreach ($conn->query("SELECT `name` FROM motion_picture") as $row) {
+                        echo "<option>" . $row['name'] . "</option>";
+                    }
+                    ?>
+                </select>
+            </label>
+            <button type="submit">
+                <div class="btn btn-primary">Like!</div>
+            </button>
         </div>
     </form>
     <div class="overflow-x-auto">
