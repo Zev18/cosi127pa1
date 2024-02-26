@@ -31,14 +31,14 @@
             </button>
         </div>
     </form>
-    <form action="like_movie.php" method="post" class="my-4 rounded-badge border-2 border-base-300 p-6 shadow">
+    <form action="index.php" method="post" class="my-4 rounded-badge border-2 border-base-300 p-6 shadow">
         <div class="space-x-2 flex gap-4 items-center flex-wrap">
             <h2 class="text-xl font-bold">Like a movie!</h2>
             <label class="form-control w-full max-w-xs">
                 <div class="label">
                     <span class="label-text">Who are you?</span>
                 </div>
-                <select class="select select-bordered">
+                <select class="select select-bordered" name="user">
                     <option disabled selected>Select user</option>
                     <?php
                     $servername = "localhost";
@@ -50,7 +50,7 @@
                     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                     foreach ($conn->query("SELECT email FROM user") as $row) {
-                        echo "<option>" . $row['email'] . "</option>";
+                        echo "<option value=\"" . $row['email'] . "\">" . $row['email'] . "</option>";
                     }
                     ?>
                 </select>
@@ -59,7 +59,7 @@
                 <div class="label">
                     <span class="label-text">What movie do you like?</span>
                 </div>
-                <select class="select select-bordered">
+                <select class="select select-bordered" name="movie">
                     <option disabled selected>Select movie</option>
                     <?php
                     $servername = "localhost";
@@ -70,13 +70,13 @@
                     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
                     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                    foreach ($conn->query("SELECT `name` FROM motion_picture") as $row) {
-                        echo "<option>" . $row['name'] . "</option>";
+                    foreach ($conn->query("SELECT mp.name, mp.id FROM movie m INNER JOIN motion_picture mp ON m.mpid = mp.id") as $row) {
+                        echo "<option value=\"" . $row['id'] . "\">" . $row['id'] . " - " . $row['name'] . "</option>";
                     }
                     ?>
                 </select>
             </label>
-            <button type="submit">
+            <button type="submit" name="like" value="like_movie">
                 <div class="btn btn-primary">Like!</div>
             </button>
         </div>
@@ -102,7 +102,7 @@
             }
 
             $queries = [
-                'view_all_movies' => "SELECT mp.name, mp.rating, mp.production, mp.budget, boxoffice_collection FROM movie JOIN motion_picture AS mp ON id = mp.id",
+                'view_all_movies' => "SELECT mp.name, mp.rating, mp.production, mp.budget, m.boxoffice_collection FROM movie m INNER JOIN motion_picture mp ON m.mpid = mp.id",
                 'view_all_actors' => "SELECT p.name, p.nationality, p.dob, p.gender FROM `role` join people as p on p.id = pid where role_name = 'actor'",
             ];
 
@@ -140,7 +140,16 @@
                 } catch (PDOException $e) {
                     echo "<p>Error: " . $e->getMessage() . "</p>";
                 }
-            } ?>
+            }
+
+            if (isset($_POST['like'])) {
+                $email = $_POST['user'];
+                $mpid = $_POST['movie'];
+                $stmt = $conn->prepare("INSERT INTO likes (user_email, mp_id) VALUES (?, ?)");
+                $stmt->bindParam("si", $email, $mpid); // "si" indicates string and integer types
+                $stmt->execute([$email, $mpid]);
+            }
+            ?>
         </table>
     </div>
 </body>
