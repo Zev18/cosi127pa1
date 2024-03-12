@@ -21,66 +21,15 @@
             <p class="text-xl px-2 font-bold">Movie database</p>
         </div>
     </header>
-    <form action="index.php" method="post" class="my-4">
-        <div class="space-x-2">
-            <button type="submit" name="query" value="view_all_movies">
-                <div class="btn">View all movies</div>
-            </button>
-            <button type="submit" name="query" value="view_all_actors">
-                <div class="btn">View all actors</div>
-            </button>
+    <!-- TABS LOGIC -->
+    <div role="tablist" class="tabs tabs-lifted">
+        <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="PA 1.2" checked />
+        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+            <?php include 'tab1.php' ?>
         </div>
-    </form>
-    <form action="index.php" method="post" class="my-4 rounded-badge border-2 border-base-300 p-6 shadow">
-        <div class="space-x-2 flex gap-4 items-center flex-wrap">
-            <h2 class="text-xl font-bold">Like a movie!</h2>
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">Who are you?</span>
-                </div>
-                <select class="select select-bordered" name="user">
-                    <option disabled selected>Select user</option>
-                    <?php
-                    $servername = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $dbname = "COSI127b";
+    </div>
 
-                    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-                    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-                    foreach ($conn->query("SELECT email FROM user") as $row) {
-                        echo "<option value=\"" . $row['email'] . "\">" . $row['email'] . "</option>";
-                    }
-                    ?>
-                </select>
-            </label>
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">What movie do you like?</span>
-                </div>
-                <select class="select select-bordered" name="movie">
-                    <option disabled selected>Select movie</option>
-                    <?php
-                    $servername = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $dbname = "COSI127b";
-
-                    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-                    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-                    foreach ($conn->query("SELECT mp.name, mp.id FROM movie m INNER JOIN motion_picture mp ON m.mpid = mp.id") as $row) {
-                        echo "<option value=\"" . $row['id'] . "\">" . $row['id'] . " - " . $row['name'] . "</option>";
-                    }
-                    ?>
-                </select>
-            </label>
-            <button type="submit" name="like" value="like_movie">
-                <div class="btn btn-primary">Like!</div>
-            </button>
-        </div>
-    </form>
+    <!-- Results table and queries logic -->
     <div class="overflow-x-auto">
         <table class="table table-zebra">
             <?php
@@ -145,7 +94,7 @@
             if (isset($_POST['like'])) {
                 $email = $_POST['user'];
                 $mpid = $_POST['movie'];
-                $stmt = $conn->prepare("INSERT INTO likes (user_email, mp_id) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO likes (uemail, mpid) VALUES (?, ?)");
                 $stmt->bindParam("si", $email, $mpid); // "si" indicates string and integer types
                 $stmt->execute([$email, $mpid]);
             }
