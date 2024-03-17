@@ -68,7 +68,9 @@
                 ",
                 'view_all_actors' => "SELECT p.name, p.nationality, p.dob, p.gender FROM `role` join people as p on p.id = pid where role_name = 'actor'
                 ",
-                'search_movie_by_name' => "SELECT name, rating, production, budget FROM motion_picture WHERE name = :movie_name
+                'search_movie_by_name' => "SELECT mp.name, mp.rating, mp.production, mp.budget
+                FROM motion_picture mp, movie m
+                WHERE mp.id = m.mpid AND mp.name = :movie_name
                 ",
                 'show_all_tables' => "show tables
                 ",
