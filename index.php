@@ -96,7 +96,7 @@
                 ",
                 'american_budget_box_office' => "SELECT p.name AS 'Producer name', mp.name AS 'Motion picture name', m.boxoffice_collection, mp.budget
                 FROM people p, role r, motion_picture mp, movie m
-                WHERE p.id = r.pid AND r.mpid = mp.id AND mp.id = m.mpid AND r.role_name = 'Producer' AND m.boxoffice_collection >= :x AND mp.budget <= :y
+                WHERE p.id = r.pid AND r.mpid = mp.id AND mp.id = m.mpid AND r.role_name = 'Producer' AND p.nationality = 'USA' AND m.boxoffice_collection >= :x AND mp.budget <= :y
                 ",
                 'multiple_roles_with_rating' => "SELECT p.name AS 'Person name', mp.name AS 'Motion picture name', q.count
                 FROM
@@ -137,7 +137,7 @@
                 WHERE mp.id = g.mpid AND mp.rating >
                     (SELECT AVG(mp2.rating)
                     FROM motion_picture mp2, genre g2
-                    WHERE mp2.id = g2.mpid AND g2.genre_name = 'Comedy') AND g.genre_name = 'Comedy'
+                    WHERE mp2.id = g2.mpid AND g2.genre_name = 'Comedy')
                 ORDER BY mp.rating DESC
                 ",
                 'top_5_most_people' => "SELECT mp2.name, q2.p_count, q1.r_count

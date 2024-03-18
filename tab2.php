@@ -53,7 +53,7 @@
             </button>
         </div>
         <div class="flex items-center gap-4">
-            <p>Show all comedies with an above-average rating:</p>
+            <p>Show all motion pictures with a rating higher than the average of all comedies:</p>
             <button type="submit" name="query" value="higher_than_avg_comedies">
                 <div class="btn btn-primary">Search</div>
             </button>
