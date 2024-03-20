@@ -64,23 +64,23 @@
             }
 
             $queries = [
-                'view_all_movies' => "SELECT mp.name, mp.rating, mp.production, mp.budget, m.boxoffice_collection FROM movie m INNER JOIN motion_picture mp ON m.mpid = mp.id
+                'view_all_movies' => "SELECT mp.name, mp.rating, mp.production, mp.budget, m.boxoffice_collection FROM movie m INNER JOIN MotionPicture mp ON m.mpid = mp.id
                 ",
                 'view_all_actors' => "SELECT p.name, p.nationality, p.dob, p.gender FROM `role` join people as p on p.id = pid where role_name = 'actor'
                 ",
                 'search_movie_by_name' => "SELECT mp.name, mp.rating, mp.production, mp.budget
-                FROM motion_picture mp, movie m
+                FROM MotionPicture mp, movie m
                 WHERE mp.id = m.mpid AND mp.name = :movie_name
                 ",
                 'show_all_tables' => "show tables
                 ",
-                'show_movies_liked_by_email' => "SELECT mp.name, mp.rating, mp.production, mp.budget FROM user u, likes l, motion_picture mp, movie m WHERE u.email = l.uemail AND l.mpid = mp.id AND mp.id = m.mpid AND u.email = :uemail
+                'show_movies_liked_by_email' => "SELECT mp.name, mp.rating, mp.production, mp.budget FROM user u, likes l, MotionPicture mp, movie m WHERE u.email = l.uemail AND l.mpid = mp.id AND mp.id = m.mpid AND u.email = :uemail
                 ",
-                'show_by_shooting_country' => "SELECT DISTINCT mp.name FROM motion_picture mp, location l WHERE mp.id = l.mpid AND l.country = :country
+                'show_by_shooting_country' => "SELECT DISTINCT mp.name FROM MotionPicture mp, location l WHERE mp.id = l.mpid AND l.country = :country
                 ",
-                'show_directors_by_zip' => "SELECT p.name AS 'Director name', mp.name AS 'Motion picture Name' FROM people p, role r, series s, location l, motion_picture mp WHERE p.id = r.pid AND r.mpid = s.mpid AND s.mpid = mp.id AND s.mpid = l.mpid AND r.role_name = 'Director' AND l.zip = :zip
+                'show_directors_by_zip' => "SELECT p.name AS 'Director name', mp.name AS 'Motion picture Name' FROM people p, role r, series s, location l, MotionPicture mp WHERE p.id = r.pid AND r.mpid = s.mpid AND s.mpid = mp.id AND s.mpid = l.mpid AND r.role_name = 'Director' AND l.zip = :zip
                 ",
-                'multiple_awards_same_mp_year' => "SELECT p.name AS 'Person name', mp.name AS 'Motion picture name', q.award_year, q.count FROM (SELECT a.pid, a.mpid, a.award_year, COUNT(*) AS count FROM award a GROUP BY a.mpid, a.pid, a.award_year HAVING COUNT(*) > :k) AS q, people p, motion_picture mp WHERE q.pid = p.id AND q.mpid = mp.id
+                'multiple_awards_same_mp_year' => "SELECT p.name AS 'Person name', mp.name AS 'Motion picture name', q.award_year, q.count FROM (SELECT a.pid, a.mpid, a.award_year, COUNT(*) AS count FROM award a GROUP BY a.mpid, a.pid, a.award_year HAVING COUNT(*) > :k) AS q, people p, MotionPicture mp WHERE q.pid = p.id AND q.mpid = mp.id
                 ",
                 'youngest_and_oldest_winner' => "SELECT DISTINCT p.name, DATEDIFF(DATE(CONCAT(a.award_year, '-01-01')), p.dob)/365 AS 'Age won'
                 FROM award a, people p, role r
@@ -95,20 +95,20 @@
                         WHERE a.pid = p.id AND a.mpid = r.mpid AND a.pid = r.pid AND r.role_name = 'Actor')
                 ",
                 'american_budget_box_office' => "SELECT p.name AS 'Producer name', mp.name AS 'Motion picture name', m.boxoffice_collection, mp.budget
-                FROM people p, role r, motion_picture mp, movie m
+                FROM people p, role r, MotionPicture mp, movie m
                 WHERE p.id = r.pid AND r.mpid = mp.id AND mp.id = m.mpid AND r.role_name = 'Producer' AND p.nationality = 'USA' AND m.boxoffice_collection >= :x AND mp.budget <= :y
                 ",
                 'multiple_roles_with_rating' => "SELECT p.name AS 'Person name', mp.name AS 'Motion picture name', q.count
                 FROM
                 (SELECT p.id AS pid, mp.id AS mpid, COUNT(*) AS count
-                FROM people p, role r, motion_picture mp
+                FROM people p, role r, MotionPicture mp
                 WHERE p.id = r.pid AND r.mpid = mp.id AND mp.rating > :rating
                 GROUP BY p.id, mp.id
-                HAVING COUNT(*) > 1) AS q, people p, motion_picture mp
+                HAVING COUNT(*) > 1) AS q, people p, MotionPicture mp
                 WHERE q.pid = p.id AND q.mpid = mp.id
                 ",
                 'top_2_thrillers_boston' => "SELECT DISTINCT mp.name, mp.rating
-                FROM motion_picture mp, movie m, genre g, location l
+                FROM MotionPicture mp, movie m, genre g, location l
                 WHERE mp.id = m.mpid AND mp.id = g.mpid AND mp.id = l.mpid AND g.genre_name = 'Thriller' AND l.city = 'Boston'
                 AND NOT EXISTS
                 (SELECT * FROM location l2 WHERE l2.mpid = mp.id AND l2.city != 'Boston')
@@ -116,40 +116,40 @@
                 LIMIT 2
                 ",
                 'likes_ages' => "SELECT mp.name, COUNT(*) AS count
-                FROM movie m, motion_picture mp, likes l, user u
+                FROM movie m, MotionPicture mp, likes l, user u
                 WHERE m.mpid = mp.id AND mp.id = l.mpid AND l.uemail = u.email AND u.age < :x
                 GROUP BY mp.name
                 HAVING count > :y
                 ",
                 'marvel_and_wb' => "SELECT actor_name, mp2.name AS WB_name, q.name AS Marvel_name
-                FROM motion_picture mp2, role r2,
+                FROM MotionPicture mp2, role r2,
                 (SELECT p.id, p.name AS actor_name, mp.name
-                FROM people p, role r, motion_picture mp
+                FROM people p, role r, MotionPicture mp
                 WHERE p.id = r.pid AND r.mpid = mp.id AND r.role_name = 'Actor' AND mp.production = 'Marvel' AND EXISTS
                     (SELECT *
-                    FROM people p2, role r2, motion_picture mp2
+                    FROM people p2, role r2, MotionPicture mp2
                     WHERE p.id = p2.id AND p2.id = r2.pid AND r2.mpid = mp2.id AND r2.role_name = 'Actor' AND mp2.production = 'Warner Bros')) AS q
                 WHERE r2.pid = q.id AND r2.role_name = 'Actor' AND r2.mpid = mp2.id AND q.name != mp2.name
 
                 ",
                 'higher_than_avg_comedies' => "SELECT DISTINCT mp.name, mp.rating
-                FROM motion_picture mp, genre g
+                FROM MotionPicture mp, genre g
                 WHERE mp.id = g.mpid AND mp.rating >
                     (SELECT AVG(mp2.rating)
-                    FROM motion_picture mp2, genre g2
+                    FROM MotionPicture mp2, genre g2
                     WHERE mp2.id = g2.mpid AND g2.genre_name = 'Comedy')
                 ORDER BY mp.rating DESC
                 ",
                 'top_5_most_people' => "SELECT mp2.name, q2.p_count, q1.r_count
                 FROM
                 (SELECT mp.id, COUNT(*) AS r_count
-                FROM motion_picture mp, movie m, role r
+                FROM MotionPicture mp, movie m, role r
                 WHERE mp.id = m.mpid AND r.mpid = mp.id
                 GROUP BY mp.id) AS q1,
                 (SELECT DISTINCT mp.id, COUNT(DISTINCT r.pid) AS p_count
-                FROM motion_picture mp, movie m, role r
+                FROM MotionPicture mp, movie m, role r
                 WHERE mp.id = m.mpid AND r.mpid = mp.id
-                GROUP BY mp.id) AS q2, motion_picture mp2
+                GROUP BY mp.id) AS q2, MotionPicture mp2
                 WHERE q1.id = q2.id AND q1.id = mp2.id
                 ORDER BY q2.p_count DESC
                 LIMIT 5

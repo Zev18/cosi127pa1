@@ -50,7 +50,7 @@
                 $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                foreach ($conn->query("SELECT mp.name, mp.id FROM movie m INNER JOIN motion_picture mp ON m.mpid = mp.id") as $row) {
+                foreach ($conn->query("SELECT mp.name, mp.id FROM movie m INNER JOIN MotionPicture mp ON m.mpid = mp.id") as $row) {
                     echo "<option value=\"" . $row['id'] . "\">" . $row['id'] . " - " . $row['name'] . "</option>";
                 }
                 ?>
