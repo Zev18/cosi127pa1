@@ -32,7 +32,7 @@
         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
             <?php include 'tab1.php' ?>
         </div>
-        <input type="radio" name="my_tabs_2" role="tab" class="tab min-w-max" aria-label="Movies" checked />
+        <input type="radio" name="my_tabs_2" role="tab" class="tab min-w-max" aria-label="Motion pictures" checked />
         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
             <?php include 'tab2.php' ?>
         </div>
